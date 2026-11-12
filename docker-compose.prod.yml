@@ -1,0 +1,24 @@
+# Backend + HTTPS reverse proxy for a single VM; the database is external (e.g. Neon) and the UI is on Vercel.
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - uploads:/app/uploads
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    command: caddy reverse-proxy --from ${API_DOMAIN:?Set API_DOMAIN in .env} --to backend:8080
+    volumes:
+      - caddy_data:/data
+
+volumes:
+  uploads:
+  caddy_data:

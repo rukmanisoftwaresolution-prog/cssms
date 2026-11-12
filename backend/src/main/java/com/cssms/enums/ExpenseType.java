@@ -1,0 +1,5 @@
+package com.cssms.enums;
+
+public enum ExpenseType {
+    FUEL, VEHICLE_MAINTENANCE, SALARY, OFFICE_EXPENSE, LOADING_CHARGES, ELECTRICITY, RENT, MISCELLANEOUS
+}

@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>CSSMS Functional Test Report</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172a35;
+      --muted: #536873;
+      --line: #d7e0e4;
+      --paper: #ffffff;
+      --canvas: #edf2f3;
+      --teal: #087e83;
+      --teal-pale: #e2f4f2;
+      --green: #176b3a;
+      --green-pale: #e6f4eb;
+      --red: #a52e32;
+      --red-pale: #fdebed;
+      --amber: #805509;
+      --amber-pale: #fff3d8;
+      --gray: #53616a;
+      --gray-pale: #edf0f2;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 15px/1.55 "Segoe UI", Arial, sans-serif;
+    }
+    .page { width: min(1240px, calc(100% - 32px)); margin: 32px auto 64px; }
+    header {
+      padding: 34px 38px;
+      background: var(--ink);
+      color: #fff;
+      border-top: 6px solid #20a4a0;
+    }
+    .eyebrow { margin: 0 0 8px; color: #a8dcd8; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(28px, 5vw, 42px); line-height: 1.12; }
+    header p { max-width: 760px; margin: 12px 0 0; color: #d8e4e8; }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin: 18px 0;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+    .metric { min-height: 96px; padding: 17px 20px; background: var(--paper); }
+    .metric strong { display: block; color: var(--teal); font-size: 28px; line-height: 1.1; }
+    .metric span { display: block; margin-top: 7px; color: var(--muted); font-size: 13px; }
+    .notice, section { margin-top: 18px; padding: 24px; background: var(--paper); border: 1px solid var(--line); }
+    .notice { border-left: 4px solid var(--teal); }
+    h2 { margin: 0 0 14px; font-size: 22px; line-height: 1.25; }
+    h3 { margin: 22px 0 10px; font-size: 17px; }
+    p { margin: 8px 0; }
+    .meta { color: var(--muted); font-size: 13px; }
+    nav { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; }
+    nav a { color: #b6e4e1; font-size: 13px; font-weight: 600; }
+    a { color: var(--teal); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; font-size: 13px; }
+    caption { padding: 10px 12px; background: #eaf0f2; color: var(--ink); text-align: left; font-weight: 700; }
+    th, td { padding: 9px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f5f8f9; color: #344b56; font-size: 12px; }
+    tbody tr:last-child td { border-bottom: 0; }
+    td:first-child { white-space: nowrap; font-weight: 700; }
+    td:nth-child(3) { min-width: 100px; }
+    .status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+    .pass { color: var(--green); background: var(--green-pale); }
+    .fail { color: var(--red); background: var(--red-pale); }
+    .partial { color: var(--amber); background: var(--amber-pale); }
+    .na, .blocked, .untested { color: var(--gray); background: var(--gray-pale); }
+    code { padding: 1px 4px; background: #f0f3f4; font-size: 0.94em; }
+    .small { color: var(--muted); font-size: 13px; }
+    footer { padding: 18px 4px; color: var(--muted); font-size: 12px; }
+    @media (max-width: 760px) {
+      .page { width: calc(100% - 20px); margin-top: 10px; }
+      header, section, .notice { padding: 20px; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media print {
+      body { background: #fff; font-size: 11px; }
+      .page { width: 100%; margin: 0; }
+      header { padding: 18px 22px; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      section, .notice { break-inside: avoid; border-color: #9aa8ad; }
+      .table-wrap { overflow: visible; }
+      table { min-width: 0; font-size: 9px; }
+      th, td { padding: 5px; }
+      nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <p class="eyebrow">Crusher Stone Supply Management System</p>
+      <h1>Functional Test Report</h1>
+      <p>Functional verification of implemented application modules, backend workflows, and browser UI. Run date: <strong>2026-10-29</strong>.</p>
+      <nav aria-label="Report sections">
+        <a href="#authentication">Authentication</a><a href="#dashboard">Dashboard</a><a href="#purchases">Purchase Orders</a><a href="#sales">Sales</a><a href="#customers">Customers</a><a href="#suppliers">Suppliers</a><a href="#inventory">Inventory</a><a href="#vehicles">Vehicles &amp; Deliveries</a><a href="#accounts">Accounts &amp; Reports</a><a href="#other">Other Modules</a><a href="#browser">Browser Cases</a><a href="#limits">Limitations</a>
+      </nav>
+    </header>
+
+    <div class="summary" aria-label="Test summary">
+      <div class="metric"><strong>18 / 18</strong><span>Backend integration tests passed</span></div>
+      <div class="metric"><strong>59</strong><span>Browser cases recorded</span></div>
+      <div class="metric"><strong>56 / 2 / 1</strong><span>Browser pass / fail / partial</span></div>
+      <div class="metric"><strong>PASS</strong><span>Frontend production build</span></div>
+    </div>
+
+    <div class="notice">
+      <h2>Run Summary</h2>
+      <p>Backend tests use Spring Boot with isolated embedded PostgreSQL 14.10; they did not modify the shared demo database. Browser testing used an authenticated admin session on <code>http://localhost:5174</code>.</p>
+      <p>Browser workflows used uniquely tagged QA records. Unused QA customers, suppliers, employees, materials, expenses, and user records were deleted. A customer used by the canceled sale was left inactive because it is transaction-referenced. The QA purchase and sales orders remain canceled audit records. Their payments were reversed and inventory, receivables, payables, and dashboard totals returned to pre-test values.</p>
+      <p><strong>Result:</strong> Core implemented workflows passed, with two browser failures: duplicate customer mobile values are accepted, and profile edits are blocked when the existing admin has no mobile number. Automatic token refresh after access-token expiry was inconclusive.</p>
+    </div>
+
+    <section id="authentication">
+      <h2>Authentication</h2>
+      <div class="table-wrap"><table><caption>Backend and browser authentication coverage</caption><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>AUTH-01</td><td>Login with valid admin credentials</td><td><span class="status pass">PASS</span></td><td><code>loginRefreshRotationAndLogout</code>; browser login also succeeded.</td></tr>
+        <tr><td>AUTH-02</td><td>Reject invalid credentials, missing token, and malformed token</td><td><span class="status pass">PASS</span></td><td><code>badCredentialsAndMissingTokenAreRejected</code>.</td></tr>
+        <tr><td>AUTH-03</td><td>Refresh token rotates; replay revokes the token family</td><td><span class="status pass">PASS</span></td><td><code>loginRefreshRotationAndLogout</code>.</td></tr>
+        <tr><td>AUTH-04</td><td>Logout revokes refresh token</td><td><span class="status pass">PASS</span></td><td><code>logoutRevokesRefreshToken</code>; logout uses authenticated access token. Browser logout returned to the login page.</td></tr>
+        <tr><td>AUTH-05</td><td>Password policy, reset token, and one-time reset behavior</td><td><span class="status pass">PASS</span></td><td><code>changePasswordAndProfile</code>.</td></tr>
+        <tr><td>AUTH-06</td><td>Role-based endpoint access</td><td><span class="status pass">PASS</span></td><td><code>roleMatrixIsEnforced</code> covers admin, manager, and sales permissions.</td></tr>
+        <tr><td>AUTH-07</td><td>Access-token/session expiry behavior</td><td><span class="status untested">NOT TESTED</span></td><td>Expiry duration is configured, but expiry over time was not exercised as a controlled test.</td></tr>
+        <tr><td>AUTH-08</td><td>Remember Me</td><td><span class="status na">NOT AVAILABLE</span></td><td>No Remember Me feature was found in the current app/API.</td></tr>
+        <tr><td>UI-59</td><td>Access-token expiry during browser session</td><td><span class="status partial">PARTIAL</span></td><td>After a prolonged session, API requests logged 401s. Manual logout/re-login restored the UI; automatic refresh behavior was not conclusively verified.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="dashboard">
+      <h2>Dashboard</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>DASH-01</td><td>Dashboard cards, trends, top customers, material sales data</td><td><span class="status pass">PASS</span></td><td><code>demoDataIsConsistentAndAllReportsWork</code>; six trend periods and expected dashboard sections are checked.</td></tr>
+        <tr><td>DASH-02</td><td>Dashboard renders in browser</td><td><span class="status pass">PASS</span></td><td>Nine KPI cards, trends, and customer/supplier summaries rendered.</td></tr>
+        <tr><td>DASH-03</td><td>Verify each KPI against independently calculated source totals</td><td><span class="status partial">PARTIAL</span></td><td>After QA transaction reversals, dashboard returned to baseline: inventory 951, today's purchase &#8377;1,010, receivables &#8377;2,18,780, payables &#8377;4,49,865. Every KPI was not independently reconciled.</td></tr>
+        <tr><td>DASH-04</td><td>Pending-delivery summary</td><td><span class="status na">NOT AVAILABLE</span></td><td>No delivery module or data model is present.</td></tr>
+        <tr><td>UI-55</td><td>Dashboard after transaction reversal</td><td><span class="status pass">PASS</span></td><td>All observed totals returned to their pre-test values.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="purchases">
+      <h2>Purchase Orders</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>PO-01</td><td>Create PO; generate PO number; calculate amount, GST, and total</td><td><span class="status pass">PASS</span></td><td><code>purchaseSaleAndPaymentsKeepStockLedgersAndBalancesConsistent</code>; <code>purchaseOrderValidationEditCancelAndStockReversal</code>.</td></tr>
+        <tr><td>PO-02</td><td>PO number uniqueness for separate orders</td><td><span class="status pass">PASS</span></td><td><code>purchaseOrderValidationEditCancelAndStockReversal</code>.</td></tr>
+        <tr><td>PO-03</td><td>Prevent duplicate business orders with identical details</td><td><span class="status untested">NOT TESTED</span></td><td>Unique generated numbers are checked; duplicate payload prevention is not established.</td></tr>
+        <tr><td>PO-04</td><td>Edit PO and recalculate totals/stock</td><td><span class="status pass">PASS</span></td><td>Backend edit/reversal checks and browser update from 2 to 3 tons; total changed to &#8377;315.</td></tr>
+        <tr><td>PO-05</td><td>Cancel PO and reverse stock; reject repeated cancellation</td><td><span class="status pass">PASS</span></td><td>Backend lifecycle test and browser cancel; supplier payment was reversed first.</td></tr>
+        <tr><td>PO-06</td><td>Date format, quantity, rate, and GST boundaries</td><td><span class="status pass">PASS</span></td><td>Malformed date, zero quantity, negative rate, and GST above 100 are rejected. Date business rules such as past/future limits are not tested.</td></tr>
+        <tr><td>PO-07</td><td>View and search PO</td><td><span class="status pass">PASS</span></td><td>Detail retrieval and PO-number search exercised.</td></tr>
+        <tr><td>PO-08</td><td>All PO filters</td><td><span class="status partial">PARTIAL</span></td><td>Search/payment/status filters are exercised; all combinations are not covered.</td></tr>
+        <tr><td>PO-09</td><td>PO approval workflow</td><td><span class="status na">NOT AVAILABLE</span></td><td>No approval endpoint/workflow was found; cancellation is supported instead.</td></tr>
+        <tr><td>PO-10</td><td>Hard-delete PO</td><td><span class="status na">NOT AVAILABLE</span></td><td>No delete endpoint; cancellation is the supported removal workflow.</td></tr>
+        <tr><td>UI-46</td><td>PO create and GST total</td><td><span class="status pass">PASS</span></td><td>Created <code>PO-202610-00008</code>; 2 tons at &#8377;100 plus 5% GST rendered &#8377;210.</td></tr>
+        <tr><td>UI-47</td><td>PO edit and recalculation</td><td><span class="status pass">PASS</span></td><td>Quantity edited to 3; total updated to &#8377;315.</td></tr>
+        <tr><td>UI-48</td><td>Supplier partial payment, reversal, PO cancellation</td><td><span class="status pass">PASS</span></td><td>&#8377;100 receipt reversed; PO returned to unpaid balance &#8377;315, then canceled.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="sales">
+      <h2>Sales</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>SALE-01</td><td>Create sale with customer/material, quantity, rate, discount, GST, and final total</td><td><span class="status pass">PASS</span></td><td><code>salesDiscountTaxAndLineValidation</code> checks discounted 5% GST calculation.</td></tr>
+        <tr><td>SALE-02</td><td>Reject invalid quantity, negative rate/discount, excessive GST, and discount above line amount</td><td><span class="status pass">PASS</span></td><td><code>salesDiscountTaxAndLineValidation</code>.</td></tr>
+        <tr><td>SALE-03</td><td>Deduct stock; enforce stock and customer credit limits</td><td><span class="status pass">PASS</span></td><td>Purchase/sale/payment backend flow, including insufficient stock and credit checks.</td></tr>
+        <tr><td>SALE-04</td><td>Edit sale and recalculate balance/stock</td><td><span class="status pass">PASS</span></td><td>Backend flow and browser quantity edit recalculated total from &#8377;997.50 to &#8377;1,522.50.</td></tr>
+        <tr><td>SALE-05</td><td>Cancel sale and restore stock/balance</td><td><span class="status pass">PASS</span></td><td>After reversing receipt, browser cancellation restored Dust to 160 tons and customer outstanding to &#8377;0.</td></tr>
+        <tr><td>SALE-06</td><td>Invoice generation</td><td><span class="status pass">PASS</span></td><td>PDF content/signature checked by backend; browser invoice endpoint returned HTTP 200.</td></tr>
+        <tr><td>SALE-07</td><td>Sales return</td><td><span class="status na">NOT AVAILABLE</span></td><td>No sales-return workflow/API was found.</td></tr>
+        <tr><td>UI-49</td><td>Sales create, discount/GST, invoice</td><td><span class="status pass">PASS</span></td><td>Created <code>INV-202610-00009</code>; &#8377;1,000 gross less &#8377;50 discount plus 5% GST = &#8377;997.50; invoice returned HTTP 200.</td></tr>
+        <tr><td>UI-50</td><td>Sales edit and recalculation</td><td><span class="status pass">PASS</span></td><td>Quantity edited to 3; total updated to &#8377;1,522.50.</td></tr>
+        <tr><td>UI-51</td><td>Customer payment and reversal</td><td><span class="status pass">PASS</span></td><td>&#8377;100 receipt created and deleted; invoice pending balance restored.</td></tr>
+        <tr><td>UI-52</td><td>Sale cancellation and stock/balance reversal</td><td><span class="status pass">PASS</span></td><td>Sale canceled; inventory and customer outstanding returned to baseline.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="customers">
+      <h2>Customers</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>CUST-01</td><td>Create, update, search, and delete unused customer</td><td><span class="status pass">PASS</span></td><td>Backend CRUD coverage and browser create/update/delete with valid GST/mobile.</td></tr>
+        <tr><td>CUST-02</td><td>Validate mobile, GST, and required address</td><td><span class="status pass">PASS</span></td><td>Invalid mobile/GST/address return field errors.</td></tr>
+        <tr><td>CUST-03</td><td>Prevent duplicate customers</td><td><span class="status fail">FAIL</span></td><td>Two customers with the same mobile were accepted; temporary records were removed. The business uniqueness key needs definition.</td></tr>
+        <tr><td>CUST-04</td><td>Customer ledger and outstanding balance</td><td><span class="status pass">PASS</span></td><td>Backend statement totals and browser QA statement: sales, collection, and closing balance all &#8377;0 after cancellation.</td></tr>
+        <tr><td>UI-40</td><td>Customer create/update/delete</td><td><span class="status pass">PASS</span></td><td>Valid GST/mobile QA record created, updated, deleted before transaction use.</td></tr>
+        <tr><td>UI-41</td><td>Duplicate mobile check</td><td><span class="status fail">FAIL</span></td><td>Duplicate accepted; both temporary records deleted.</td></tr>
+        <tr><td>UI-52</td><td>Transaction-linked customer cleanup</td><td><span class="status pass">PASS</span></td><td>After sale cancellation, customer outstanding was &#8377;0; customer marked inactive because transaction reference prevents delete.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="suppliers">
+      <h2>Suppliers</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>SUP-01</td><td>Create, update, search, and delete unused supplier</td><td><span class="status pass">PASS</span></td><td>Backend and browser CRUD using a disposable QA supplier.</td></tr>
+        <tr><td>SUP-02</td><td>Validate supplier contact, mobile, GST, and address</td><td><span class="status pass">PASS</span></td><td>Invalid fields return field errors; valid GST supplier created in browser.</td></tr>
+        <tr><td>SUP-03</td><td>Supplier payments, limits, and ledger balance</td><td><span class="status pass">PASS</span></td><td>Partial/full payment, overpayment rejection, deletion reversal, and supplier statement totals tested.</td></tr>
+        <tr><td>UI-42</td><td>Supplier create/update/delete</td><td><span class="status pass">PASS</span></td><td>QA supplier removed after CRUD.</td></tr>
+        <tr><td>UI-48</td><td>Supplier payment reversal</td><td><span class="status pass">PASS</span></td><td>Payment deletion restored PO balance before PO cancellation.</td></tr>
+        <tr><td>UI-54</td><td>Supplier statement</td><td><span class="status pass">PASS</span></td><td>Statement rendered; canceled QA PO/payment were absent.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="inventory">
+      <h2>Inventory</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>INV-01</td><td>Purchase adds stock; sale deducts stock; cancellation reverses movement</td><td><span class="status pass">PASS</span></td><td>PO/sales lifecycle asserts exact stock deltas; browser transaction reversals restored Dust to 160 tons.</td></tr>
+        <tr><td>INV-02</td><td>Prevent negative stock</td><td><span class="status pass">PASS</span></td><td>Oversized sale rejected in backend integration flow.</td></tr>
+        <tr><td>INV-03</td><td>Current stock equals purchased minus sold</td><td><span class="status pass">PASS</span></td><td><code>demoDataIsConsistentAndAllReportsWork</code> checks every material.</td></tr>
+        <tr><td>INV-04</td><td>Opening-stock entry</td><td><span class="status na">NOT AVAILABLE</span></td><td>No opening-stock operation in documented inventory API.</td></tr>
+        <tr><td>INV-05</td><td>Inventory mismatch recovery</td><td><span class="status partial">PARTIAL</span></td><td>Invariant is checked; no mismatch repair workflow exists.</td></tr>
+        <tr><td>UI-56</td><td>Inventory card/table views</td><td><span class="status pass">PASS</span></td><td>Both views show Dust purchased 200, sold 40, current 160.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="vehicles">
+      <h2>Vehicles and Deliveries</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>VEH-01</td><td>Vehicle registration, driver assignment, status, duplicates, allocation conflicts</td><td><span class="status na">NOT AVAILABLE</span></td><td>Vehicle number is plain order text; there is no vehicle/driver management module.</td></tr>
+        <tr><td>DEL-01</td><td>Create, complete, cancel, partial delivery, delivered-vs-invoiced quantity</td><td><span class="status na">NOT AVAILABLE</span></td><td>No delivery module or endpoints were found.</td></tr>
+        <tr><td>PO-09</td><td>Purchase order approval workflow</td><td><span class="status na">NOT AVAILABLE</span></td><td>No approval endpoint/workflow was found.</td></tr>
+        <tr><td>SALE-07</td><td>Sales return</td><td><span class="status na">NOT AVAILABLE</span></td><td>No sales-return workflow/API was found.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="accounts">
+      <h2>Accounts, Payments, and Reports</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>ACC-01</td><td>Customer statement and running/closing balance</td><td><span class="status pass">PASS</span></td><td>Backend lifecycle and browser statement for canceled QA sale.</td></tr>
+        <tr><td>ACC-02</td><td>Supplier statement and closing balance</td><td><span class="status pass">PASS</span></td><td>Backend and browser supplier statement.</td></tr>
+        <tr><td>ACC-03</td><td>Receivable/payable reports</td><td><span class="status pass">PASS</span></td><td>Report endpoints and UI routes rendered.</td></tr>
+        <tr><td>ACC-04</td><td>Remaining Accounts acceptance criteria</td><td><span class="status blocked">BLOCKED</span></td><td>Original request was cut off after “Accounts Module Validate: Customer…”.</td></tr>
+        <tr><td>PAY-01</td><td>Customer/supplier payment create, overpayment rejection, reversal</td><td><span class="status pass">PASS</span></td><td>Backend lifecycle and browser payment creation/deletion flows.</td></tr>
+        <tr><td>RPT-01</td><td>Report endpoints and required date parameters</td><td><span class="status pass">PASS</span></td><td><code>demoDataIsConsistentAndAllReportsWork</code>.</td></tr>
+        <tr><td>RPT-02</td><td>PDF/Excel exports and invalid format rejection</td><td><span class="status pass">PASS</span></td><td>Backend export tests; browser P&amp;L PDF and Excel export endpoints both returned HTTP 200.</td></tr>
+        <tr><td>UI-53</td><td>Customer statement generation</td><td><span class="status pass">PASS</span></td><td>QA customer statement showed zero sales, receipts, and closing balance after cancellation.</td></tr>
+        <tr><td>UI-57</td><td>P&amp;L generation and exports</td><td><span class="status pass">PASS</span></td><td>October report generated; PDF and XLSX endpoints returned HTTP 200.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="other">
+      <h2>Other Implemented Modules</h2>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Test case</th><th>Result</th><th>Evidence / notes</th></tr></thead><tbody>
+        <tr><td>USER-01</td><td>User create, update, search, delete, duplicate username rejection</td><td><span class="status pass">PASS</span></td><td>Backend uniqueness check and browser QA user create/edit/delete.</td></tr>
+        <tr><td>EMP-01</td><td>Employee create, update, search, soft delete</td><td><span class="status pass">PASS</span></td><td>Backend CRUD test and browser QA employee create/edit/delete.</td></tr>
+        <tr><td>MAT-01</td><td>Duplicate material rejection and used-material delete protection</td><td><span class="status pass">PASS</span></td><td>Backend test; browser QA material create/edit/delete.</td></tr>
+        <tr><td>EXP-01</td><td>Expense create, update, search, delete, amount validation</td><td><span class="status pass">PASS</span></td><td>Backend and browser QA expense create/edit/delete.</td></tr>
+        <tr><td>EXP-02</td><td>Attachment upload/download/removal and invalid type rejection</td><td><span class="status pass">PASS</span></td><td><code>expenseAttachmentUploadDownloadAndTypeValidation</code>.</td></tr>
+        <tr><td>UI-58</td><td>Profile update with empty mobile</td><td><span class="status fail">FAIL</span></td><td>Existing admin profile has no mobile; UI blocked saving another field with “Mobile number is required.” No change was saved.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="browser">
+      <h2>Browser Functional Cases</h2>
+      <p class="meta">All browser route checks used the authenticated admin session. The following page/action cases are recorded individually.</p>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Page / action</th><th>Result</th><th>Observed behavior</th></tr></thead><tbody>
+        <tr><td>UI-01</td><td>Dashboard <code>/</code></td><td><span class="status pass">PASS</span></td><td>Dashboard heading, nine KPI cards, trends, customer/supplier summaries rendered.</td></tr>
+        <tr><td>UI-02</td><td>Employees <code>/employees</code></td><td><span class="status pass">PASS</span></td><td>List heading and filters rendered.</td></tr>
+        <tr><td>UI-03</td><td>Suppliers <code>/suppliers</code></td><td><span class="status pass">PASS</span></td><td>List heading and filters rendered.</td></tr>
+        <tr><td>UI-04</td><td>Customers <code>/customers</code></td><td><span class="status pass">PASS</span></td><td>List heading and filters rendered.</td></tr>
+        <tr><td>UI-05</td><td>Materials <code>/materials</code></td><td><span class="status pass">PASS</span></td><td>List heading rendered.</td></tr>
+        <tr><td>UI-06</td><td>Purchase Orders <code>/purchase-orders</code></td><td><span class="status pass">PASS</span></td><td>List heading and filters rendered.</td></tr>
+        <tr><td>UI-07</td><td>Inventory <code>/inventory</code></td><td><span class="status pass">PASS</span></td><td>Inventory heading and stock data rendered.</td></tr>
+        <tr><td>UI-08</td><td>Sales Orders <code>/sales-orders</code></td><td><span class="status pass">PASS</span></td><td>List heading and filters rendered.</td></tr>
+        <tr><td>UI-09</td><td>Customer Payments <code>/customer-payments</code></td><td><span class="status pass">PASS</span></td><td>Payment list heading and filters rendered.</td></tr>
+        <tr><td>UI-10</td><td>Supplier Payments <code>/supplier-payments</code></td><td><span class="status pass">PASS</span></td><td>Payment list heading and filters rendered.</td></tr>
+        <tr><td>UI-11</td><td>Expenses <code>/expenses</code></td><td><span class="status pass">PASS</span></td><td>Expense list heading and filters rendered.</td></tr>
+        <tr><td>UI-12</td><td>Customer Statement <code>/accounts/customer-statement</code></td><td><span class="status pass">PASS</span></td><td>Statement heading and customer/date controls rendered.</td></tr>
+        <tr><td>UI-13</td><td>Supplier Statement <code>/accounts/supplier-statement</code></td><td><span class="status pass">PASS</span></td><td>Statement heading and supplier/date controls rendered.</td></tr>
+        <tr><td>UI-14</td><td>Receivables <code>/accounts/receivables</code></td><td><span class="status pass">PASS</span></td><td>Receivable report rendered.</td></tr>
+        <tr><td>UI-15</td><td>Payables <code>/accounts/payables</code></td><td><span class="status pass">PASS</span></td><td>Payable report and export controls rendered.</td></tr>
+        <tr><td>UI-16</td><td>Purchase Statement <code>/reports/purchase-statement</code></td><td><span class="status pass">PASS</span></td><td>Report heading and filters rendered.</td></tr>
+        <tr><td>UI-17</td><td>Sales Statement <code>/reports/sales-statement</code></td><td><span class="status pass">PASS</span></td><td>Report heading and filters rendered.</td></tr>
+        <tr><td>UI-18</td><td>Material Profit <code>/reports/material-profit</code></td><td><span class="status pass">PASS</span></td><td>Report heading and filters rendered.</td></tr>
+        <tr><td>UI-19</td><td>Current Stock <code>/reports/stock-current</code></td><td><span class="status pass">PASS</span></td><td>Report data and export controls rendered.</td></tr>
+        <tr><td>UI-20</td><td>Material-wise Stock <code>/reports/stock-material-wise</code></td><td><span class="status pass">PASS</span></td><td>Report heading and material filter rendered.</td></tr>
+        <tr><td>UI-21</td><td>Stock Movement <code>/reports/stock-movement</code></td><td><span class="status pass">PASS</span></td><td>Report heading and filters rendered.</td></tr>
+        <tr><td>UI-22</td><td>Customer Payment Report <code>/reports/customer-payments</code></td><td><span class="status pass">PASS</span></td><td>Report heading and filters rendered.</td></tr>
+        <tr><td>UI-23</td><td>Supplier Payment Report <code>/reports/supplier-payments</code></td><td><span class="status pass">PASS</span></td><td>Report heading and filters rendered.</td></tr>
+        <tr><td>UI-24</td><td>Expense Report <code>/reports/expense-report</code></td><td><span class="status pass">PASS</span></td><td>Report heading and filters rendered.</td></tr>
+        <tr><td>UI-25</td><td>Profit &amp; Loss <code>/reports/profit-loss</code></td><td><span class="status pass">PASS</span></td><td>Period controls and report generation controls rendered.</td></tr>
+        <tr><td>UI-26</td><td>Users <code>/users</code></td><td><span class="status pass">PASS</span></td><td>User list heading and role filter rendered.</td></tr>
+        <tr><td>UI-27</td><td>Profile <code>/profile</code></td><td><span class="status pass">PASS</span></td><td>Profile fields rendered.</td></tr>
+        <tr><td>UI-28</td><td>Change Password <code>/change-password</code></td><td><span class="status pass">PASS</span></td><td>Password fields rendered.</td></tr>
+        <tr><td>UI-29</td><td>Add Employee</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 7 accessible fields.</td></tr>
+        <tr><td>UI-30</td><td>Add Supplier</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 8 accessible fields.</td></tr>
+        <tr><td>UI-31</td><td>Add Customer</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 7 accessible fields.</td></tr>
+        <tr><td>UI-32</td><td>Add Material</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 3 accessible fields.</td></tr>
+        <tr><td>UI-33</td><td>New Purchase Order</td><td><span class="status pass">PASS</span></td><td>PO form rendered with 5 accessible fields.</td></tr>
+        <tr><td>UI-34</td><td>New Sales Order</td><td><span class="status pass">PASS</span></td><td>Sales form rendered with 7 accessible fields.</td></tr>
+        <tr><td>UI-35</td><td>Receive Customer Payment</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 6 accessible fields.</td></tr>
+        <tr><td>UI-36</td><td>Make Supplier Payment</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 6 accessible fields.</td></tr>
+        <tr><td>UI-37</td><td>Add Expense</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 3 accessible fields.</td></tr>
+        <tr><td>UI-38</td><td>Add User</td><td><span class="status pass">PASS</span></td><td>Dialog opened with 6 accessible fields.</td></tr>
+        <tr><td>UI-39</td><td>Employee create/update/delete</td><td><span class="status pass">PASS</span></td><td>QA employee created, updated, deleted.</td></tr>
+        <tr><td>UI-40</td><td>Customer create/update/delete</td><td><span class="status pass">PASS</span></td><td>Valid GST/mobile QA record created, updated, deleted before transaction use.</td></tr>
+        <tr><td>UI-41</td><td>Duplicate customer mobile</td><td><span class="status fail">FAIL</span></td><td>Two customers with the same mobile were accepted; both temporary records were deleted.</td></tr>
+        <tr><td>UI-42</td><td>Supplier create/update/delete</td><td><span class="status pass">PASS</span></td><td>QA supplier created, updated, deleted.</td></tr>
+        <tr><td>UI-43</td><td>Material create/update/delete</td><td><span class="status pass">PASS</span></td><td>QA material description update confirmed; record deleted.</td></tr>
+        <tr><td>UI-44</td><td>Expense create/update/delete</td><td><span class="status pass">PASS</span></td><td>Amount updated; removal confirmed after list refresh.</td></tr>
+        <tr><td>UI-45</td><td>User create/update/delete</td><td><span class="status pass">PASS</span></td><td>QA user created, updated, deleted.</td></tr>
+        <tr><td>UI-46</td><td>PO create and GST total</td><td><span class="status pass">PASS</span></td><td>PO <code>PO-202610-00008</code>; 2 tons at &#8377;100 plus 5% GST = &#8377;210.</td></tr>
+        <tr><td>UI-47</td><td>PO edit and recalculation</td><td><span class="status pass">PASS</span></td><td>Quantity 3; total &#8377;315.</td></tr>
+        <tr><td>UI-48</td><td>Supplier payment reversal and PO cancellation</td><td><span class="status pass">PASS</span></td><td>&#8377;100 payment reversed; PO canceled with stock restored.</td></tr>
+        <tr><td>UI-49</td><td>Sales create, discount/GST, invoice</td><td><span class="status pass">PASS</span></td><td>Invoice <code>INV-202610-00009</code>; final &#8377;997.50; invoice HTTP 200.</td></tr>
+        <tr><td>UI-50</td><td>Sales edit and recalculation</td><td><span class="status pass">PASS</span></td><td>Quantity 3; final &#8377;1,522.50.</td></tr>
+        <tr><td>UI-51</td><td>Customer payment and reversal</td><td><span class="status pass">PASS</span></td><td>&#8377;100 payment reversed; pending balance restored.</td></tr>
+        <tr><td>UI-52</td><td>Sales cancellation and inventory/balance reversal</td><td><span class="status pass">PASS</span></td><td>Sale canceled; stock returned to 160 tons and outstanding to &#8377;0; customer marked inactive.</td></tr>
+        <tr><td>UI-53</td><td>Customer statement generation</td><td><span class="status pass">PASS</span></td><td>Sales, collection, and closing balance all &#8377;0 after cancellation.</td></tr>
+        <tr><td>UI-54</td><td>Supplier statement</td><td><span class="status pass">PASS</span></td><td>Statement rendered with closing balance &#8377;2,03,640; canceled QA PO/payment absent.</td></tr>
+        <tr><td>UI-55</td><td>Dashboard after transaction reversal</td><td><span class="status pass">PASS</span></td><td>Inventory 951; purchase &#8377;1,010; receivables &#8377;2,18,780; payables &#8377;4,49,865.</td></tr>
+        <tr><td>UI-56</td><td>Inventory card/table view</td><td><span class="status pass">PASS</span></td><td>Both views show Dust purchased 200, sold 40, current 160.</td></tr>
+        <tr><td>UI-57</td><td>Profit &amp; Loss generation and exports</td><td><span class="status pass">PASS</span></td><td>October report generated; PDF and Excel export endpoints returned HTTP 200.</td></tr>
+        <tr><td>UI-58</td><td>Profile update with empty mobile</td><td><span class="status fail">FAIL</span></td><td>Existing admin has no mobile; profile form blocked saving another field. No profile change was saved.</td></tr>
+        <tr><td>UI-59</td><td>Access-token expiry during browser session</td><td><span class="status partial">PARTIAL</span></td><td>After a prolonged session, API requests logged 401s; logout/re-login restored UI. Automatic refresh was inconclusive.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="limits">
+      <h2>Limitations and Follow-up</h2>
+      <ul>
+        <li>Backend tests use MockMvc against the full Spring application and isolated PostgreSQL. Browser tests exercised the listed workflows, but not every filter combination, report form, or invalid-input path through the UI.</li>
+        <li>Performance/load testing and comprehensive security assessment were not run. Security coverage here means authentication, token handling, validation, and role authorization tests.</li>
+        <li>Separate vehicle management, delivery tracking, PO approval, sales returns, Remember Me, and opening-stock entry are not available in this build.</li>
+        <li>Customer duplicate prevention is unmet. The uniqueness key, such as mobile or GST, needs a business decision.</li>
+        <li>The Accounts checklist supplied to QA ended after “Accounts Module Validate: Customer…”, so remaining acceptance criteria were blocked.</li>
+      </ul>
+      <p class="small">Backend integration suite: 18 tests, 0 failures, 0 errors. Frontend production build: passed. Test records were isolated or reversed as described above.</p>
+    </section>
+    <footer>CSSMS Functional Test Report · 2026-10-29 · See the companion <a href="FUNCTIONAL-TEST-REPORT.md">Markdown report</a>.</footer>
+  </div>
+</body>
+</html>

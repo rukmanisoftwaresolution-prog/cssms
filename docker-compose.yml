@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cssms
+      POSTGRES_USER: cssms
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cssms -d cssms"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Use "prod,demo" to load the sample data on first start.
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_URL: jdbc:postgresql://db:5432/cssms
+      DB_USERNAME: cssms
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env (at least 32 characters)}
+      APP_ADMIN_USERNAME: ${APP_ADMIN_USERNAME:-admin}
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:?Set APP_ADMIN_PASSWORD in .env}
+      APP_ADMIN_EMAIL: ${APP_ADMIN_EMAIL:-admin@cssms.local}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost}
+      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-false}
+      COMPANY_NAME: ${COMPANY_NAME:-CSSMS Crusher & Stone Supply}
+      COMPANY_ADDRESS: ${COMPANY_ADDRESS:-Crusher Road, Industrial Area}
+      COMPANY_PHONE: ${COMPANY_PHONE:-}
+      COMPANY_GSTIN: ${COMPANY_GSTIN:-}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Kolkata}
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${WEB_PORT:-80}:80"
+
+volumes:
+  pgdata:
+  uploads:
